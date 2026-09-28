@@ -685,7 +685,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lastSubmission) return;
 
     const message = generateWhatsAppMessage(lastSubmission);
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/919526003488?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   });
 
