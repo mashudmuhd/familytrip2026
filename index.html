@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ml">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaattike kuttikal COUSINS TRIP 2026 | രജിസ്ട്രേഷൻ</title>
+  <meta name="description"
+    content="കാട്ടിലെ കുട്ടികൾ COUSINS TRIP 2026 - 1-Day Family Resort Get-together Registration Portal">
+
+  <!-- Google Fonts: Inter, Plus Jakarta Sans, Outfit, Noto Sans Malayalam, Manjari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&family=Noto+Sans+Malayalam:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Canvas Confetti for Celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+  <!-- Ambient Particle Canvas Background -->
+  <canvas id="ambientCanvas"></canvas>
+
+  <!-- Ambient Glowing Blobs -->
+  <div class="ambient-glow glow-emerald"></div>
+  <div class="ambient-glow glow-amber"></div>
+  <div class="ambient-glow glow-pink"></div>
+  <div class="ambient-glow glow-cyan"></div>
+
+  <!-- Top Utilities Bar -->
+  <div class="top-bar">
+    <div class="brand-tag">
+      <span class="pulse-dot"></span>
+      <span>TRIP 2026 OFFICIAL PORTAL</span>
+    </div>
+    <div class="top-actions">
+      <button id="soundToggleBtn" class="glass-pill-btn" title="Toggle Sound Effects" aria-label="Toggle Sound">
+        <i data-lucide="volume-2" id="soundIcon"></i>
+        <span id="soundLabel">Sound On</span>
+      </button>
+      <button id="viewRegisteredBtn" class="glass-pill-btn" title="View Saved Pass" aria-label="View Saved Pass">
+        <i data-lucide="ticket"></i>
+        <span>My Pass</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="page-container">
+
+    <!-- HERO SECTION -->
+    <header class="hero-section">
+      <!-- Top Pill Badge (from Screenshot) -->
+      <div class="pill-badge" id="tripCategoryBadge">
+        <span class="badge-icon">🌴</span>
+        <span class="badge-text">FAMILY GET-TOGETHER • 1-DAY TRIP</span>
+      </div>
+
+      <!-- Main Animated Title -->
+      <div class="title-wrapper">
+        <div class="malayalam-super-title">
+          <span class="leaf-icon-left">🌿</span>
+          <span class="malayalam-glow">കാട്ടിലെ കുട്ടികൾ</span>
+          <span class="leaf-icon-right">🌿</span>
+        </div>
+        <h1 class="main-title">
+          <span class="gradient-text">COUSINS TRIP</span>
+          <span class="year-badge">2026</span>
+        </h1>
+        <p class="hero-subtitle">
+          കാടിന്റെ കുളിരും കസിൻസിന്റെ ചിരിയും ഒത്തുചേരുന്ന ഒരു അടിപൊളി റിസോർട്ട് ദിനം!
+        </p>
+      </div>
+
+      <!-- Quick Trip Highlights Bar -->
+      <div class="highlights-row">
+        <div class="highlight-item">
+          <i data-lucide="map-pin"></i>
+          <span>Scenic Nature Resort</span>
+        </div>
+        <div class="highlight-item">
+          <i data-lucide="utensils"></i>
+          <span>Food, Games & Fun</span>
+        </div>
+        <div class="highlight-item">
+          <i data-lucide="waves"></i>
+          <span>Pool & Activities</span>
+        </div>
+        <div class="highlight-item">
+          <i data-lucide="calendar"></i>
+          <span>Full Day Experience</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- FORM CONTAINER -->
+    <form id="tripRegistrationForm" class="form-wrapper" novalidate>
+
+      <!-- IMPORTANT NOTICE CARD (From Screenshot) -->
+      <div class="notice-card" id="noticeCard">
+        <div class="notice-card-glow"></div>
+        <div class="notice-content">
+          <div class="notice-header">
+            <div class="warning-icon-wrapper">
+              <i data-lucide="alert-triangle" class="warning-icon"></i>
+            </div>
+            <h2 class="notice-title">ശ്രദ്ധിക്കുക (Important Notice):</h2>
+          </div>
+
+          <div class="notice-body">
+            <p class="notice-para">
+              അംഗങ്ങളുടെ എണ്ണം കൃത്യമായി മനസ്സിലാക്കുന്നതിനായി തയ്യാറാക്കിയ ഫോമാണിത്.
+              <strong class="highlight-yellow">ഓരോ കുടുംബത്തിൽ നിന്നും ഒരാൾ മാത്രം</strong> ഈ ഫോം പൂരിപ്പിക്കുക.
+            </p>
+            <p class="notice-para">
+              <strong class="highlight-yellow">ഒരു വയസ്സിനു മുകളിലുള്ള കുട്ടികളുടെ പേരുകൾ ഉൾപ്പെടെ</strong>, യാത്രയിൽ
+              പങ്കെടുക്കുന്ന എല്ലാവരുടെയും പേരുകൾ വ്യക്തമായി രേഖപ്പെടുത്തുക.
+            </p>
+            <p class="notice-para">
+              <strong class="highlight-yellow-underline">നൽകുന്ന വിവരങ്ങൾ അന്തിമമായിരിക്കും.</strong> ഈ എണ്ണം
+              അടിസ്ഥാനമാക്കിയാണ് റിസോർട്ട് താമസവും മറ്റ് പ്ലാനുകളും ചെയ്യുന്നത് എന്നതിനാൽ, പിന്നീട് മാറ്റങ്ങൾ വരുത്താൻ
+              സാധിക്കില്ല.
+            </p>
+            <p class="notice-para notice-footnote">
+              💬 നിർദ്ദേശങ്ങളിൽ എന്തെങ്കിലും അഭിപ്രായവ്യത്യാസങ്ങൾ ഉള്ളവർക്ക് ഗ്രൂപ്പിൽ രേഖപ്പെടുത്താവുന്നതാണ്.
+            </p>
+          </div>
+
+          <div class="notice-pill-badge">
+            <span class="notice-pill-icon">🌴</span>
+            <span class="notice-pill-text">ഇതൊരു 1-Day Resort Trip ആയിരിക്കും!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE COUNTER STATS (4 Cards) -->
+      <div class="stats-grid">
+        <!-- Card 1: Total Count -->
+        <div class="stat-card stat-total" id="statTotalCard">
+          <div class="stat-inner">
+            <span class="stat-label-ml">ആകെ ആളുകൾ</span>
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="totalCountDisplay">0</span>
+            </div>
+            <span class="stat-label-en">Total Count</span>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 2: Adults -->
+        <div class="stat-card stat-adults" id="statAdultsCard">
+          <div class="stat-inner">
+            <span class="stat-label-ml">മുതിർന്നവർ</span>
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="adultCountDisplay">0</span>
+            </div>
+            <span class="stat-label-en">Adults (15+)</span>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 3: Kids (8-15 Years) -->
+        <div class="stat-card stat-kid8to15" id="statKid8to15Card">
+          <div class="stat-inner">
+            <span class="stat-label-ml">കുട്ടികൾ</span>
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="kid8to15CountDisplay">0</span>
+            </div>
+            <span class="stat-label-en">8-15 Years</span>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 4: Kids (<8 Years) -->
+        <div class="stat-card stat-kidBelow8" id="statKidBelow8Card">
+          <div class="stat-inner">
+            <span class="stat-label-ml">കുട്ടികൾ</span>
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="kidBelow8CountDisplay">0</span>
+            </div>
+            <span class="stat-label-en">&lt;8 Years</span>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+      </div>
+
+      <!-- MEMBERS SECTION HEADER (From Screenshot) -->
+      <div class="section-header">
+        <div class="section-title-left">
+          <div class="section-icon-badge">
+            <i data-lucide="users" class="section-icon"></i>
+          </div>
+          <h3 class="section-title">
+            കുടുംബാംഗങ്ങളുടെ വിവരങ്ങൾ <span class="en-sub">(ENTER MEMBERS)</span>
+          </h3>
+        </div>
+        <div class="section-summary-badge" id="memberCountBadge">
+          1 Person
+        </div>
+      </div>
+
+      <!-- DYNAMIC MEMBERS LIST CONTAINER -->
+      <div class="members-container" id="membersContainer">
+        <!-- Member cards will be dynamically rendered / populated here -->
+      </div>
+
+      <!-- ADD ANOTHER MEMBER BUTTON (From Screenshot) -->
+      <button type="button" class="add-member-btn" id="addMemberBtn">
+        <div class="add-btn-content">
+          <div class="add-icon-circle">
+            <i data-lucide="user-plus" class="add-icon"></i>
+          </div>
+          <span class="add-btn-text">+ Add Another Member / അടുത്ത ആളെ ചേർക്കുക</span>
+        </div>
+        <div class="add-btn-ripple"></div>
+      </button>
+
+      <!-- WHATSAPP / CONTACT NUMBER CARD (From Screenshot) -->
+      <div class="contact-card">
+        <div class="contact-header">
+          <div class="contact-icon-badge">
+            <i data-lucide="phone-call" class="contact-icon"></i>
+          </div>
+          <label for="phoneNumberInput" class="contact-title">
+            WHATSAPP / PHONE NUMBER <span class="optional-tag">(OPTIONAL)</span>
+          </label>
+        </div>
+        <div class="input-wrapper">
+          <input type="tel" id="phoneNumberInput" class="custom-input"
+            placeholder="e.g. 98470 12345 (ആവശ്യമുണ്ടെങ്കിൽ മാത്രം നൽകുക)" autocomplete="tel" maxlength="15">
+          <div class="input-border-glow"></div>
+        </div>
+      </div>
+
+
+      <!-- SUBMIT ACTION BUTTON -->
+      <div class="submit-action-wrapper">
+        <button type="submit" class="submit-btn btn-disabled" id="submitBtn" disabled>
+          <span class="submit-btn-bg"></span>
+          <span class="submit-btn-glow"></span>
+          <span class="submit-btn-content">
+            <i data-lucide="sparkles" class="btn-sparkle-icon"></i>
+            <span class="submit-text">രജിസ്ട്രേഷൻ സമർപ്പിക്കുക (Submit Registration)</span>
+            <i data-lucide="arrow-right" class="btn-arrow-icon"></i>
+          </span>
+        </button>
+
+        <!-- Live Validation Helper Badge -->
+        <div class="validation-status-badge" id="validationStatusBadge">
+          <i data-lucide="alert-circle" id="valStatusIcon"></i>
+          <span id="valStatusText">തുടരാൻ പേരും പ്രായവും നൽകുക (Fill name & age to submit)</span>
+        </div>
+
+        <p class="submit-footnote">
+          🔒 നിങ്ങളുടെ വിവരങ്ങൾ ട്രിപ്പ് കോർഡിനേറ്റർമാർക്ക് മാത്രമായിരിക്കും ലഭ്യമാവുക.
+        </p>
+      </div>
+
+    </form>
+
+    <!-- RECENT SUBMISSIONS / QUICK STATS SUMMARY BANNER -->
+    <div class="footer-banner">
+      <div class="footer-badge">
+        <i data-lucide="shield-check"></i>
+        <span>COUSINS TRIP 2026 • KOODIKKAZHCHA COMMITTEE</span>
+      </div>
+      <p class="footer-quote">
+        "ഒരുമിച്ചൊരു നാൾ, മായാത്ത ഓർമ്മകൾ!"
+      </p>
+    </div>
+
+  </main>
+
+  <!-- SUCCESS / BOARDING PASS MODAL -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="modal-celebration-header">
+        <div class="celebration-badge">
+          <span>🎉 REGISTRATION CONFIRMED 🎉</span>
+        </div>
+        <h2 class="modal-title">സ്വാഗതം! കാട്ടിലെ കുട്ടികൾ</h2>
+        <p class="modal-subtitle">നിങ്ങളുടെ രജിസ്ട്രേഷൻ വിജയകരമായി രേഖപ്പെടുത്തിയിരിക്കുന്നു!</p>
+      </div>
+
+      <!-- TRIP PASS TICKET -->
+      <div class="ticket-card" id="ticketCard">
+        <div class="ticket-top">
+          <div class="ticket-brand">
+            <span class="ticket-logo">🌴</span>
+            <div>
+              <h4>COUSINS TRIP 2026</h4>
+              <span class="ticket-type">VIP RESORT PASS</span>
+            </div>
+          </div>
+          <div class="ticket-id" id="ticketIdDisplay">#CK-2026-001</div>
+        </div>
+
+        <div class="ticket-divider">
+          <div class="notch notch-left"></div>
+          <div class="dashed-line"></div>
+          <div class="notch notch-right"></div>
+        </div>
+
+        <div class="ticket-body">
+          <div class="ticket-row">
+            <div class="ticket-col">
+              <span class="t-label">FAMILY / LEADER</span>
+              <span class="t-value" id="ticketLeaderName">-</span>
+            </div>
+            <div class="ticket-col">
+              <span class="t-label">PHONE</span>
+              <span class="t-value" id="ticketPhone">-</span>
+            </div>
+          </div>
+
+          <div class="ticket-row">
+            <div class="ticket-col">
+              <span class="t-label">TOTAL PERSONS</span>
+              <span class="t-value highlight-cyan" id="ticketTotalMembers">0</span>
+            </div>
+            <div class="ticket-col">
+              <span class="t-label">BREAKDOWN</span>
+              <span class="t-value" id="ticketBreakdown">0 Adults • 0 Kids</span>
+            </div>
+          </div>
+
+          <div class="ticket-members-list">
+            <span class="t-label">REGISTERED MEMBERS:</span>
+            <div class="member-chips" id="ticketMemberChips">
+              <!-- Chips will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket-bottom">
+          <div class="ticket-qr-placeholder">
+            <i data-lucide="qr-code"></i>
+            <span>TRIP-VERIFIED</span>
+          </div>
+          <div class="ticket-date">
+            <span>📅 TRIP 2026</span>
+            <span class="status-confirmed">● CONFIRMED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL ACTION BUTTONS -->
+      <div class="modal-actions">
+        <button type="button" class="action-btn whatsapp-share-btn" id="shareWhatsappBtn">
+          <i data-lucide="message-circle"></i>
+          <span>Share to WhatsApp Group</span>
+        </button>
+
+        <button type="button" class="action-btn copy-summary-btn" id="copySummaryBtn">
+          <i data-lucide="copy"></i>
+          <span id="copyBtnText">Copy Details</span>
+        </button>
+      </div>
+
+      <div class="modal-footer-note">
+        <span>ഒരു പുതിയ രജിസ്ട്രേഷൻ ചെയ്യാൻ അല്ലെങ്കിൽ തിരുത്താൻ വീണ്ടും ഫോം ഉപയോഗിക്കാം.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
