@@ -913,19 +913,34 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
 
   // Google Apps Script Web App URL
-  // Deploy google-apps-script.js in Google Sheets and set the URL below or in localStorage
+  // Can be hardcoded below or configured silently via ?set_sheet_url=... or window.setTripSheetUrl(...)
   let GOOGLE_SCRIPT_URL = localStorage.getItem('cousins_trip_sheet_url') || '';
+
+  // Silent setup via URL parameter (e.g. your-site.html?set_sheet_url=https://script.google.com/macros/s/.../exec)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramUrl = urlParams.get('set_sheet_url') || urlParams.get('sheet_url');
+    if (paramUrl && paramUrl.startsWith('http')) {
+      GOOGLE_SCRIPT_URL = paramUrl;
+      localStorage.setItem('cousins_trip_sheet_url', paramUrl);
+    }
+  } catch (e) { }
+
+  // Admin helper for developer console
+  window.setTripSheetUrl = function (url) {
+    if (url && url.startsWith('http')) {
+      GOOGLE_SCRIPT_URL = url;
+      localStorage.setItem('cousins_trip_sheet_url', url);
+      fetchJoinedMembersFromBackend(true);
+      console.log('✅ Google Sheet URL saved:', url);
+    }
+  };
 
   let allJoinedMembers = [];
   const joinedCardsContainer = document.getElementById('joinedCardsContainer');
   const joinedSearchInput = document.getElementById('joinedSearchInput');
   const clearSearchBtn = document.getElementById('clearSearchBtn');
   const refreshMembersBtn = document.getElementById('refreshMembersBtn');
-  const connectSheetBtn = document.getElementById('connectSheetBtn');
-  const sheetSetupModal = document.getElementById('sheetSetupModal');
-  const sheetModalCloseBtn = document.getElementById('sheetModalCloseBtn');
-  const sheetUrlInput = document.getElementById('sheetUrlInput');
-  const saveSheetUrlBtn = document.getElementById('saveSheetUrlBtn');
   const refreshIcon = document.getElementById('refreshIcon');
   const totalJoinedFamiliesDisplay = document.getElementById('totalJoinedFamilies');
   const totalJoinedPersonsDisplay = document.getElementById('totalJoinedPersons');
@@ -939,41 +954,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initJoinedMembersSection();
 
   function initJoinedMembersSection() {
-    // Pre-fill sheet URL input if saved
-    if (sheetUrlInput && GOOGLE_SCRIPT_URL) {
-      sheetUrlInput.value = GOOGLE_SCRIPT_URL;
-    }
-
-    // Connect Sheet modal open/close
-    if (connectSheetBtn && sheetSetupModal) {
-      connectSheetBtn.addEventListener('click', () => {
-        sheetSetupModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      });
-    }
-
-    if (sheetModalCloseBtn && sheetSetupModal) {
-      sheetModalCloseBtn.addEventListener('click', () => {
-        sheetSetupModal.classList.remove('active');
-        document.body.style.overflow = '';
-      });
-    }
-
-    if (saveSheetUrlBtn && sheetUrlInput) {
-      saveSheetUrlBtn.addEventListener('click', () => {
-        const val = sheetUrlInput.value.trim();
-        if (!val || !val.startsWith('http')) {
-          showToast('ദയവായി സാധുവായ ഒരു URL നൽകുക', 'error');
-          return;
-        }
-        GOOGLE_SCRIPT_URL = val;
-        localStorage.setItem('cousins_trip_sheet_url', val);
-        sheetSetupModal.classList.remove('active');
-        document.body.style.overflow = '';
-        showToast('Google Sheet കണക്ട് ചെയ്തു! Sync ചെയ്യുന്നു...', 'success');
-        fetchJoinedMembersFromBackend(true);
-      });
-    }
 
     // 1. Load cached members from localStorage for instant rendering
     const cached = localStorage.getItem('cousins_trip_all_joined');
@@ -1163,34 +1143,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!list || list.length === 0) {
       const emptyDiv = document.createElement('div');
       emptyDiv.className = 'joined-empty-state';
-      if (!GOOGLE_SCRIPT_URL && !searchQuery) {
-        emptyDiv.innerHTML = `
-          <div class="joined-empty-icon" style="background:rgba(16,185,129,0.15); border-color:#10b981; color:#34d399;">
-            <i data-lucide="sheet"></i>
-          </div>
-          <h3 class="joined-empty-title">Google Sheet ബന്ധിപ്പിച്ചിട്ടില്ല</h3>
-          <p class="joined-empty-desc">എല്ലാവരുടെയും രജിസ്ട്രേഷൻ വിവരങ്ങൾ തത്സമയം കാണാൻ നിങ്ങളുടെ Google Sheet ലിങ്ക് ഇവിടെ നൽകുക.</p>
-          <button type="button" id="emptyStateConnectBtn" class="refresh-list-btn" style="background:linear-gradient(135deg, #059669, #10b981); color:#fff; font-weight:800; padding:10px 22px; margin-top:6px; border:none; cursor:pointer;">
-            <i data-lucide="link"></i>
-            <span>Google Sheet ബന്ധിപ്പിക്കുക (Connect Sheet)</span>
+      emptyDiv.innerHTML = `
+        <div class="joined-empty-icon">
+          <i data-lucide="${searchQuery ? 'search-x' : 'user-check'}"></i>
+        </div>
+        <h3 class="joined-empty-title">${searchQuery ? 'തിരഞ്ഞ പേരിൽ ആരെയും കണ്ടില്ല' : 'ആരും ഇതുവരെ രജിസ്റ്റർ ചെയ്തിട്ടില്ല!'}</h3>
+        <p class="joined-empty-desc">${searchQuery ? 'മറ്റൊരു പേര് അല്ലെങ്കിൽ ഫോൺ നമ്പർ തിരഞ്ഞു നോക്കുക.' : 'നിങ്ങളുടെ കുടുംബത്തിന്റെ രജിസ്ട്രേഷൻ ആദ്യമായി സമർപ്പിക്കൂ!'}</p>
+        ${!searchQuery ? `
+          <button type="button" id="emptyStateRegisterBtn" class="refresh-list-btn" style="background:linear-gradient(135deg, #059669, #10b981); color:#fff; font-weight:800; padding:12px 24px; margin-top:10px; border:none; cursor:pointer; border-radius:9999px; box-shadow:0 4px 15px rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:8px;">
+            <i data-lucide="sparkles" style="width:18px; height:18px;"></i>
+            <span>രജിസ്റ്റർ ചെയ്യുക (Register Now)</span>
           </button>
-        `;
-      } else {
-        emptyDiv.innerHTML = `
-          <div class="joined-empty-icon">
-            <i data-lucide="${searchQuery ? 'search-x' : 'user-check'}"></i>
-          </div>
-          <h3 class="joined-empty-title">${searchQuery ? 'തിരഞ്ഞ പേരിൽ ആരെയും കണ്ടില്ല' : 'ആരും ഇതുവരെ രജിസ്റ്റർ ചെയ്തിട്ടില്ല!'}</h3>
-          <p class="joined-empty-desc">${searchQuery ? 'മറ്റൊരു പേര് അല്ലെങ്കിൽ ഫോൺ നമ്പർ തിരഞ്ഞു നോക്കുക.' : 'നിങ്ങളുടെ കുടുംബത്തിന്റെ രജിസ്ട്രേഷൻ ആദ്യമായി സമർപ്പിക്കൂ!'}</p>
-        `;
-      }
+        ` : ''}
+      `;
       joinedCardsContainer.appendChild(emptyDiv);
 
-      const emptyConnectBtn = emptyDiv.querySelector('#emptyStateConnectBtn');
-      if (emptyConnectBtn && sheetSetupModal) {
-        emptyConnectBtn.addEventListener('click', () => {
-          sheetSetupModal.classList.add('active');
-          document.body.style.overflow = 'hidden';
+      const emptyRegisterBtn = emptyDiv.querySelector('#emptyStateRegisterBtn');
+      if (emptyRegisterBtn && tabRegisterBtn) {
+        emptyRegisterBtn.addEventListener('click', () => {
+          tabRegisterBtn.click();
         });
       }
 
