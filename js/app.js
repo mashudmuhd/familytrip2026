@@ -57,6 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
      MEMBER MANAGEMENT & RENDERING
      ========================================================================== */
 
+  function escapeHtml(text) {
+    if (!text && text !== 0) return '';
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.toString().replace(/[&<>"']/g, m => map[m]);
+  }
+
   function generateId() {
     return 'm_' + Math.random().toString(36).substr(2, 9);
   }
@@ -377,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const unfilledNames = members.filter(m => !m.name || m.name.trim().length < 2);
     const unselectedAges = members.filter(m => !m.type);
     const adultCount = members.filter(m => m.type === 'adult').length;
-    const rawPhone = phoneNumberInput ? phoneNumberInput.value.trim() : '';
+    const rawPhone = (phoneNumberInput && phoneNumberInput.value) ? phoneNumberInput.value.trim() : '';
     const phoneDigits = rawPhone.replace(/[^0-9]/g, '');
     const isPhoneInvalid = rawPhone.length > 0 && phoneDigits.length < 10;
 
