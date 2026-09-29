@@ -130,14 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Option 3: Kid (<8 Years) -->
+        <!-- Option 3: Kid (Below 8 Years) -->
         <div class="type-toggle-btn ${isKidBelow8 ? 'active-kidBelow8' : ''}" data-type="kidBelow8">
           <div class="type-icon-wrapper">
             <i data-lucide="${isKidBelow8 ? 'check-circle-2' : 'baby'}"></i>
           </div>
           <div class="type-text-group">
-            <span class="type-title">കുട്ടി (&lt;8 Yrs)</span>
-            <span class="type-subtitle">&lt;8 വയസ്സിന് താഴെ</span>
+            <span class="type-title">കുട്ടി (Below 8)</span>
+            <span class="type-subtitle">8 വയസ്സിൽ താഴെ</span>
           </div>
         </div>
       </div>
@@ -632,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const kid8to15 = data.kid8to15Count || 0;
     const kidBelow8 = data.kidBelow8Count !== undefined ? data.kidBelow8Count : (data.kidCount || 0);
-    document.getElementById('ticketBreakdown').textContent = `${data.adultCount} Adults • ${kid8to15} Kids (8-15) • ${kidBelow8} Kids (<8)`;
+    document.getElementById('ticketBreakdown').textContent = `${data.adultCount} Adults • ${kid8to15} Kids (8-15) • ${kidBelow8} Kids (Below 8)`;
 
     // Populate Member Chips
     const chipsContainer = document.getElementById('ticketMemberChips');
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (m.type === 'kidBelow8' || m.type === 'kid') {
         chipClass = 'chip-kidBelow8';
         icon = '👶';
-        typeLabel = '<8 Yrs';
+        typeLabel = 'Below 8 Yrs';
       }
 
       chip.className = `member-chip ${chipClass}`;
@@ -715,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(() => {
         showToast('മെസ്സേജ് കോപ്പി ചെയ്തു! ഗ്രൂപ്പിൽ Paste ചെയ്യുക', 'success');
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => {
         window.open(groupUrl, '_blank');
       });
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
     data.membersList.forEach((m, idx) => {
       let typeLabel = 'Adult (15+)';
       if (m.type === 'kid8to15') typeLabel = 'Kid (8-15 Yrs)';
-      else if (m.type === 'kidBelow8' || m.type === 'kid') typeLabel = 'Kid (<8 Yrs)';
+      else if (m.type === 'kidBelow8' || m.type === 'kid') typeLabel = 'Kid (Below 8)';
       lines.push(`${idx + 1}. *${m.name}* - ${typeLabel}`);
     });
 
