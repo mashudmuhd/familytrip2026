@@ -776,29 +776,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function generateWhatsAppMessage(data) {
-    const kid8to15 = data.kid8to15Count || 0;
-    const kidBelow8 = data.kidBelow8Count !== undefined ? data.kidBelow8Count : (data.kidCount || 0);
-
     const lines = [
       '🌴 *കാട്ടിലെ കുട്ടികൾ COUSINS TRIP 2026* 🌴',
       '--------------------------------',
-      `*Pass ID:* #${data.ticketId}`,
-      `*കുടുംബനാഥൻ (Contact):* ${data.familyHead}`,
+      `*ആകെ അംഗങ്ങൾ (Total):* ${data.totalCount}`
     ];
 
     if (data.phone && data.phone !== 'Not Provided' && data.phone.trim() !== '') {
-      lines.push(`*Phone / WhatsApp:* ${data.phone}`);
+      lines.push(`*Phone:* ${data.phone}`);
     }
 
     lines.push('');
-    lines.push(`*ആകെ അംഗങ്ങൾ (Total Members):* ${data.totalCount}`);
-    lines.push(`• മുതിർന്നവർ (Adults 15+): ${data.adultCount}`);
-    lines.push(`• കുട്ടികൾ (8-15 വയസ്സ്): ${kid8to15}`);
-    lines.push(`• കുട്ടികൾ (8 വയസ്സിൽ താഴെ): ${kidBelow8}`);
-
-    lines.push('');
     lines.push('*അംഗങ്ങളുടെ വിവരങ്ങൾ (Members List):*');
-    data.membersList.forEach((m, idx) => {
+    (data.membersList || []).forEach((m, idx) => {
       let typeLabel = 'Adult (15+)';
       if (m.type === 'kid8to15') typeLabel = 'Kid (8-15 Yrs)';
       else if (m.type === 'kidBelow8' || m.type === 'kid') typeLabel = 'Kid (Below 8)';
