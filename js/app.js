@@ -715,8 +715,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Share to WhatsApp (Pre-fills message into WhatsApp chat)
-  shareWhatsappBtn.addEventListener('click', () => {
+  // Share to WhatsApp (Native Mobile Share with WhatsApp fallback)
+  shareWhatsappBtn.addEventListener('click', async () => {
     if (!lastSubmission) {
       const saved = localStorage.getItem('cousins_trip_2026_submission');
       if (saved) lastSubmission = JSON.parse(saved);
@@ -724,13 +724,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lastSubmission) return;
 
     const message = generateWhatsAppMessage(lastSubmission);
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
-    // Copy to clipboard as well for safety
+    // Auto-copy to clipboard as backup
     copyTextToClipboard(message).catch(() => {});
-    showToast('WhatsApp തുറക്കുന്നു... (Opening WhatsApp...)', 'success');
 
-    window.open(whatsappUrl, '_blank');
+    // 1. Try Native Web Share API first (Standard on mobile browsers, 100% preserves text)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'കാട്ടിലെ കുട്ടികൾ COUSINS TRIP 2026',
+          text: message
+        });
+        showToast('ഷെയർ ചെയ്തു! 🎉', 'success');
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return; // User closed sheet
+      }
+    }
+
+    // 2. Direct WhatsApp App Protocol (bypasses browser redirect that drops text)
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = `whatsapp://send?text=${encodeURIComponent(message)}`;
+    } else {
+      window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    showToast('WhatsApp തുറക്കുന്നു... (Opening WhatsApp...)', 'success');
   });
 
   // Copy Summary Details
@@ -761,7 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const lines = [
       '🌴 *കാട്ടിലെ കുട്ടികൾ COUSINS TRIP 2026* 🌴',
-      '─────────────────────────',
+      '--------------------------------',
       `*Pass ID:* #${data.ticketId}`,
       `*കുടുംബനാഥൻ (Contact):* ${data.familyHead}`,
     ];
@@ -787,7 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lines.push('');
     lines.push('*Status:* Confirmed (രജിസ്ട്രേഷൻ പൂർത്തിയായി) ✅');
-    lines.push('─────────────────────────');
+    lines.push('--------------------------------');
 
     return lines.join('\n');
   }
