@@ -913,8 +913,9 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
 
   // Google Apps Script Web App URL
-  // Can be hardcoded below or configured silently via ?set_sheet_url=... or window.setTripSheetUrl(...)
-  let GOOGLE_SCRIPT_URL = localStorage.getItem('cousins_trip_sheet_url') || '';
+  const DEFAULT_REMOTE_URL = 'https://script.google.com/macros/s/AKfycbyd6pveoTJXQfMKNi2xN6bR5xZU5StnDVglQSaHM8QXV3PxijxC2trAfG5wjIZU_3QI/exec';
+  let storedUrl = localStorage.getItem('cousins_trip_sheet_url');
+  let GOOGLE_SCRIPT_URL = (storedUrl && storedUrl.startsWith('http')) ? storedUrl : DEFAULT_REMOTE_URL;
 
   // Silent setup via URL parameter (e.g. your-site.html?set_sheet_url=https://script.google.com/macros/s/.../exec)
   try {
