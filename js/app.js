@@ -630,9 +630,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.soundManager) window.soundManager.playSuccess();
     triggerCelebrationConfetti();
 
-    // Show Boarding Pass Modal
-    showSuccessModal(submissionData);
-    showToast('രജിസ്ട്രേഷൻ വിജയകരമായി പൂർത്തിയായി! 🎉', 'success');
+    showToast('രജിസ്ട്രേഷൻ പൂർത്തിയായി! WhatsApp തുറക്കുന്നു... 🚀', 'success');
+
+    // Switch view to Joined Members list so it shows updated list
+    const tabJoinedBtn = document.getElementById('tabJoinedBtn');
+    if (tabJoinedBtn) {
+      tabJoinedBtn.click();
+    }
+
+    // Direct redirect to WhatsApp with pre-filled message
+    directOpenWhatsApp(submissionData);
+  }
+
+  function directOpenWhatsApp(data) {
+    const message = generateWhatsAppMessage(data);
+
+    // Copy to clipboard as safety backup
+    copyTextToClipboard(message).catch(() => { });
+
+    const encoded = encodeURIComponent(message);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.location.href = `whatsapp://send?text=${encoded}`;
+    } else {
+      window.open(`https://web.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
   }
 
   /* ==========================================================================
@@ -726,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const message = generateWhatsAppMessage(lastSubmission);
 
     // Auto-copy to clipboard as backup
-    copyTextToClipboard(message).catch(() => {});
+    copyTextToClipboard(message).catch(() => { });
 
     // 1. Try Native Web Share API first (Standard on mobile browsers, 100% preserves text)
     if (navigator.share) {
