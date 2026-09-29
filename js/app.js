@@ -715,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Share to WhatsApp Group Link
+  // Share to WhatsApp (Pre-fills message into WhatsApp chat)
   shareWhatsappBtn.addEventListener('click', () => {
     if (!lastSubmission) {
       const saved = localStorage.getItem('cousins_trip_2026_submission');
@@ -724,16 +724,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lastSubmission) return;
 
     const message = generateWhatsAppMessage(lastSubmission);
-    const groupUrl = 'https://chat.whatsapp.com/DvSm1WrEayALujp2dGq87d?mode=gi_t';
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
-    copyTextToClipboard(message)
-      .then(() => {
-        showToast('മെസ്സേജ് കോപ്പി ചെയ്തു! ഗ്രൂപ്പിൽ Paste ചെയ്യുക', 'success');
-      })
-      .catch(() => { })
-      .finally(() => {
-        window.open(groupUrl, '_blank');
-      });
+    // Copy to clipboard as well for safety
+    copyTextToClipboard(message).catch(() => {});
+    showToast('WhatsApp തുറക്കുന്നു... (Opening WhatsApp...)', 'success');
+
+    window.open(whatsappUrl, '_blank');
   });
 
   // Copy Summary Details
@@ -1043,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cached) {
         try {
           allJoinedMembers = JSON.parse(cached);
-        } catch (e) {}
+        } catch (e) { }
       }
       updateJoinedStatsUI(allJoinedMembers);
       renderJoinedCards(allJoinedMembers);

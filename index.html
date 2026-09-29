@@ -22,8 +22,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- Stylesheets with Cache Busting -->
-  <link rel="stylesheet" href="css/style.css?v=2.3">
-  <link rel="stylesheet" href="css/animations.css?v=2.3">
+  <link rel="stylesheet" href="css/style.css?v=2.5">
+  <link rel="stylesheet" href="css/animations.css?v=2.5">
 
   <style>
     /* Critical UI Segmented Tabs & Joined Members Section Styles */
@@ -841,8 +841,13 @@
       <div class="modal-actions">
         <button type="button" class="action-btn whatsapp-share-btn" id="shareWhatsappBtn">
           <i data-lucide="message-circle"></i>
-          <span>Share to WhatsApp Group</span>
+          <span>Share to WhatsApp</span>
         </button>
+
+        <a href="https://chat.whatsapp.com/DvSm1WrEayALujp2dGq87d?mode=gi_t" target="_blank" rel="noopener noreferrer" class="action-btn" id="joinGroupLinkBtn" style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #c7d2fe; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i data-lucide="users"></i>
+          <span>Join WhatsApp Group</span>
+        </a>
 
         <button type="button" class="action-btn copy-summary-btn" id="copySummaryBtn">
           <i data-lucide="copy"></i>
@@ -919,7 +924,7 @@
   <!-- Scripts -->
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/app.js?v=2.5"></script>
 </body>
 
 </html>
