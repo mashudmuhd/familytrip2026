@@ -669,6 +669,8 @@ document.addEventListener('DOMContentLoaded', () => {
     directOpenWhatsApp(submissionData);
   }
 
+  const TARGET_WHATSAPP_NUMBER = '919946290209';
+
   function directOpenWhatsApp(data) {
     const message = generateWhatsAppMessage(data);
 
@@ -679,9 +681,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     if (isMobile) {
-      window.location.href = `whatsapp://send?text=${encoded}`;
+      window.location.href = `whatsapp://send?phone=${TARGET_WHATSAPP_NUMBER}&text=${encoded}`;
     } else {
-      window.open(`https://web.whatsapp.com/send?text=${encoded}`, '_blank');
+      window.open(`https://web.whatsapp.com/send?phone=${TARGET_WHATSAPP_NUMBER}&text=${encoded}`, '_blank');
     }
   }
 
@@ -861,12 +863,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 2. Direct WhatsApp App Protocol (bypasses browser redirect that drops text)
+    // 2. Direct WhatsApp App Protocol to Organizer Phone
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
-      window.location.href = `whatsapp://send?text=${encodeURIComponent(message)}`;
+      window.location.href = `whatsapp://send?phone=${TARGET_WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
     } else {
-      window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+      window.open(`https://web.whatsapp.com/send?phone=${TARGET_WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`, '_blank');
     }
 
     showToast('WhatsApp തുറക്കുന്നു... (Opening WhatsApp...)', 'success');
