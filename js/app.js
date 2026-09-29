@@ -676,6 +676,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Safe cross-device clipboard copier with fallback
+  function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        textArea.remove();
+        if (successful) resolve();
+        else reject(new Error('Copy command failed'));
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
   // Share to WhatsApp Group Link
   shareWhatsappBtn.addEventListener('click', () => {
     if (!lastSubmission) {
@@ -687,16 +711,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const message = generateWhatsAppMessage(lastSubmission);
     const groupUrl = 'https://chat.whatsapp.com/DvSm1WrEayALujp2dGq87d?mode=gi_t';
 
-    // Auto-copy message details to clipboard so user can immediately paste in group chat
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(message).then(() => {
-        showToast('മെസ്സേജ് കോപ്പി ചെയ്തു! ഗ്രൂപ്പിൽ പേസ്റ്റ് ചെയ്യുക (Copied! Paste in group)', 'success');
-      }).catch(() => {});
-    } else {
-      showToast('ഗ്രൂപ്പ് തുറക്കുന്നു... (Opening group...)', 'info');
-    }
-
-    window.open(groupUrl, '_blank');
+    copyTextToClipboard(message)
+      .then(() => {
+        showToast('മെസ്സേജ് കോപ്പി ചെയ്തു! ഗ്രൂപ്പിൽ Paste ചെയ്യുക', 'success');
+      })
+      .catch(() => {})
+      .finally(() => {
+        window.open(groupUrl, '_blank');
+      });
   });
 
   // Copy Summary Details
@@ -708,37 +730,54 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lastSubmission) return;
 
     const message = generateWhatsAppMessage(lastSubmission);
-    navigator.clipboard.writeText(message).then(() => {
-      copyBtnText.textContent = 'Copied! ✓';
-      showToast('വിവരങ്ങൾ കോപ്പി ചെയ്തു (Details copied to clipboard)', 'success');
-      setTimeout(() => {
-        copyBtnText.textContent = 'Copy Details';
-      }, 2500);
-    }).catch(() => {
-      showToast('Copy failed, please share via WhatsApp', 'error');
-    });
+    copyTextToClipboard(message)
+      .then(() => {
+        copyBtnText.textContent = 'Copied! ✓';
+        showToast('വിവരങ്ങൾ കോപ്പി ചെയ്തു (Details copied)', 'success');
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Details';
+        }, 2500);
+      })
+      .catch(() => {
+        showToast('Copy failed, please copy manually', 'error');
+      });
   });
 
   function generateWhatsAppMessage(data) {
     const kid8to15 = data.kid8to15Count || 0;
     const kidBelow8 = data.kidBelow8Count !== undefined ? data.kidBelow8Count : (data.kidCount || 0);
 
-    let msg = `🌴 *കാട്ടിലെ കുട്ടികൾ COUSINS TRIP 2026* 🌴\n`;
-    msg += `✨ *Family Registration Pass: #${data.ticketId}*\n\n`;
-    msg += `👤 *Family / Main Contact:* ${data.familyHead}\n`;
-    if (data.phone && data.phone !== 'Not Provided') {
-      msg += `📞 *Phone / WhatsApp:* ${data.phone}\n`;
+    const lines = [
+      '🌴 *കാട്ടിലെ കുട്ടികൾ COUSINS TRIP 2026* 🌴',
+      '─────────────────────────',
+      `*Pass ID:* #${data.ticketId}`,
+      `*കുടുംബനാഥൻ (Contact):* ${data.familyHead}`,
+    ];
+
+    if (data.phone && data.phone !== 'Not Provided' && data.phone.trim() !== '') {
+      lines.push(`*Phone / WhatsApp:* ${data.phone}`);
     }
-    msg += `📊 *Total Members:* ${data.totalCount} (Adults: ${data.adultCount}, 8-15 Yrs: ${kid8to15}, <8 Yrs: ${kidBelow8})\n`;
-    msg += `\n👥 *Registered Members:*\n`;
+
+    lines.push('');
+    lines.push(`*ആകെ അംഗങ്ങൾ (Total Members):* ${data.totalCount}`);
+    lines.push(`• മുതിർന്നവർ (Adults 15+): ${data.adultCount}`);
+    lines.push(`• കുട്ടികൾ (8-15 വയസ്സ്): ${kid8to15}`);
+    lines.push(`• കുട്ടികൾ (8 വയസ്സിൽ താഴെ): ${kidBelow8}`);
+
+    lines.push('');
+    lines.push('*അംഗങ്ങളുടെ വിവരങ്ങൾ (Members List):*');
     data.membersList.forEach((m, idx) => {
       let typeLabel = 'Adult (15+)';
       if (m.type === 'kid8to15') typeLabel = 'Kid (8-15 Yrs)';
       else if (m.type === 'kidBelow8' || m.type === 'kid') typeLabel = 'Kid (<8 Yrs)';
-      msg += `   ${idx + 1}. ${m.name} (${typeLabel})\n`;
+      lines.push(`${idx + 1}. *${m.name}* - ${typeLabel}`);
     });
-    msg += `\n✅ *Status:* 100% Confirmed & Ready for Trip! 🥳🎉`;
-    return msg;
+
+    lines.push('');
+    lines.push('*Status:* Confirmed (രജിസ്ട്രേഷൻ പൂർത്തിയായി) ✅');
+    lines.push('─────────────────────────');
+
+    return lines.join('\n');
   }
 
   /* ==========================================================================
