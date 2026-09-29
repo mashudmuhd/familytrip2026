@@ -391,7 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const adultCount = members.filter(m => m.type === 'adult').length;
     const rawPhone = (phoneNumberInput && phoneNumberInput.value) ? phoneNumberInput.value.trim() : '';
     const phoneDigits = rawPhone.replace(/[^0-9]/g, '');
-    const isPhoneInvalid = rawPhone.length > 0 && phoneDigits.length < 10;
+    const isPhoneEmpty = phoneDigits.length === 0;
+    const isPhoneInvalid = phoneDigits.length < 10;
 
     let isReady = false;
     let statusMsg = '';
@@ -404,8 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
       statusMsg = 'എല്ലാ അംഗങ്ങളുടെയും പ്രായം തിരഞ്ഞെടുക്കുക (Select age for all members)';
     } else if (adultCount === 0) {
       statusMsg = 'കുറഞ്ഞത് 1 മുതിർന്ന ആളെയെങ്കിലും (Adult 15+) ചേർക്കുക';
+    } else if (isPhoneEmpty) {
+      statusMsg = 'തുടരാൻ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക (Mobile number required)';
     } else if (isPhoneInvalid) {
-      statusMsg = 'ശരിയായ 10 അക്ക ഫോൺ നമ്പർ നൽകുക (Valid phone required)';
+      statusMsg = 'ശരിയായ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക (10-digit number required)';
     } else {
       isReady = true;
       statusMsg = '✅ സമർപ്പിക്കാൻ തയ്യാറാണ്! (Ready to Submit)';
@@ -473,6 +476,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let val = e.target.value.replace(/[^0-9+\s-]/g, '');
     e.target.value = val;
     clearFieldInvalid(phoneNumberInput);
+
+    const digits = val.replace(/[^0-9]/g, '').slice(-10);
+    if (digits.length === 10) {
+      const exists = allJoinedMembers.some(item => {
+        if (!item || !item.phone || item.phone === 'Not Provided') return false;
+        const p = String(item.phone).replace(/[^0-9]/g, '').slice(-10);
+        return p.length >= 10 && p === digits;
+      });
+      if (exists) {
+        setFieldInvalid(phoneNumberInput, '⚠️ ഈ നമ്പറിൽ രജിസ്ട്രേഷൻ നിലവിലുണ്ട് (Already registered)');
+      }
+    }
+
     updateSubmitButtonState();
     saveDraftToStorage();
   });
@@ -564,17 +580,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Check 4: Phone Number format validation (if provided)
+    // Check 4: Mobile Number is MANDATORY (10 digits)
     const rawPhone = phoneNumberInput.value.trim();
-    if (rawPhone) {
-      const digits = rawPhone.replace(/[^0-9]/g, '');
-      if (digits.length < 10) {
-        hasError = true;
-        setFieldInvalid(phoneNumberInput, 'ശരിയായ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക (Enter 10-digit number)');
-        if (!firstErrorElement) firstErrorElement = phoneNumberInput;
-        if (!errorToastMessage) {
-          errorToastMessage = 'ശരിയായ 10 അക്ക ഫോൺ നമ്പർ നൽകുക! (Invalid phone number)';
-        }
+    const digits = rawPhone.replace(/[^0-9]/g, '');
+    if (!rawPhone || digits.length < 10) {
+      hasError = true;
+      setFieldInvalid(phoneNumberInput, '10 അക്ക മൊബൈൽ നമ്പർ നൽകൽ നിർബന്ധമാണ് (10-digit mobile required)');
+      if (!firstErrorElement) firstErrorElement = phoneNumberInput;
+      if (!errorToastMessage) {
+        errorToastMessage = 'ദയവായി സാധുവായ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക!';
       }
     }
 
@@ -596,6 +610,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       return; // Stop execution completely
+    }
+
+    // Check 5: Duplicate Submission Check by Mobile Number
+    const last10Digits = digits.slice(-10);
+    const existingSubmission = allJoinedMembers.find(item => {
+      if (!item || !item.phone || item.phone === 'Not Provided') return false;
+      const p = String(item.phone).replace(/[^0-9]/g, '').slice(-10);
+      return p.length >= 10 && p === last10Digits;
+    });
+
+    if (existingSubmission) {
+      showAlreadySubmittedDialog(existingSubmission);
+      return; // Stop execution completely!
     }
 
     // ALL VALID: Proceed with registration
@@ -713,6 +740,75 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
     }
   });
+
+  /* ==========================================================================
+     ALREADY SUBMITTED DIALOG MODAL
+     ========================================================================== */
+  const alreadySubmittedModal = document.getElementById('alreadySubmittedModal');
+  const alreadyCloseBtn = document.getElementById('alreadyCloseBtn');
+  const dupViewListBtn = document.getElementById('dupViewListBtn');
+  const dupChangePhoneBtn = document.getElementById('dupChangePhoneBtn');
+  const dupFamilyHead = document.getElementById('dupFamilyHead');
+  const dupPhone = document.getElementById('dupPhone');
+  const dupTicketId = document.getElementById('dupTicketId');
+  const dupTotalCount = document.getElementById('dupTotalCount');
+
+  function showAlreadySubmittedDialog(data) {
+    if (dupFamilyHead) dupFamilyHead.textContent = data.familyHead || 'Family Leader';
+    if (dupPhone) dupPhone.textContent = data.phone || phoneNumberInput.value;
+    if (dupTicketId) dupTicketId.textContent = '#' + (data.ticketId || '');
+    if (dupTotalCount) dupTotalCount.textContent = (data.totalCount || 1) + ' പേർ (Persons)';
+
+    if (alreadySubmittedModal) {
+      alreadySubmittedModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    if (window.soundManager) window.soundManager.playError();
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function closeAlreadySubmittedDialog() {
+    if (alreadySubmittedModal) {
+      alreadySubmittedModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (alreadyCloseBtn) {
+    alreadyCloseBtn.addEventListener('click', closeAlreadySubmittedDialog);
+  }
+
+  if (alreadySubmittedModal) {
+    alreadySubmittedModal.addEventListener('click', (e) => {
+      if (e.target === alreadySubmittedModal) closeAlreadySubmittedDialog();
+    });
+  }
+
+  if (dupChangePhoneBtn) {
+    dupChangePhoneBtn.addEventListener('click', () => {
+      closeAlreadySubmittedDialog();
+      if (phoneNumberInput) {
+        phoneNumberInput.focus();
+        phoneNumberInput.select();
+      }
+    });
+  }
+
+  if (dupViewListBtn) {
+    dupViewListBtn.addEventListener('click', () => {
+      closeAlreadySubmittedDialog();
+      const tabJoinedBtn = document.getElementById('tabJoinedBtn');
+      if (tabJoinedBtn) {
+        tabJoinedBtn.click();
+      }
+      const joinedSearchInput = document.getElementById('joinedSearchInput');
+      if (joinedSearchInput) {
+        joinedSearchInput.value = phoneNumberInput.value.trim();
+        joinedSearchInput.dispatchEvent(new Event('input'));
+      }
+    });
+  }
 
   // Safe cross-device clipboard copier with fallback
   function copyTextToClipboard(text) {

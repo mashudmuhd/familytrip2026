@@ -638,12 +638,13 @@
             <i data-lucide="phone-call" class="contact-icon"></i>
           </div>
           <label for="phoneNumberInput" class="contact-title">
-            WHATSAPP / PHONE NUMBER <span class="optional-tag">(OPTIONAL)</span>
+            WHATSAPP / PHONE NUMBER <span class="required-indicator"
+              style="color:#f87171; font-weight:800; font-size:0.8rem; margin-left:4px;">* നിർബന്ധം (REQUIRED)</span>
           </label>
         </div>
         <div class="input-wrapper">
           <input type="tel" id="phoneNumberInput" class="custom-input"
-            placeholder="e.g. 98470 12345 (ആവശ്യമുണ്ടെങ്കിൽ മാത്രം നൽകുക)" autocomplete="tel" maxlength="15">
+            placeholder="e.g. 98470 12345 (10 അക്ക മൊബൈൽ നമ്പർ നൽകുക)" autocomplete="tel" maxlength="15" required>
           <div class="input-border-glow"></div>
         </div>
       </div>
@@ -839,7 +840,9 @@
           <span>Share to WhatsApp</span>
         </button>
 
-        <a href="https://chat.whatsapp.com/DvSm1WrEayALujp2dGq87d?mode=gi_t" target="_blank" rel="noopener noreferrer" class="action-btn" id="joinGroupLinkBtn" style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #c7d2fe; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <a href="https://chat.whatsapp.com/DvSm1WrEayALujp2dGq87d?mode=gi_t" target="_blank" rel="noopener noreferrer"
+          class="action-btn" id="joinGroupLinkBtn"
+          style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #c7d2fe; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
           <i data-lucide="users"></i>
           <span>Join WhatsApp Group</span>
         </a>
@@ -856,13 +859,71 @@
     </div>
   </div>
 
+  <!-- ALREADY SUBMITTED DIALOG MODAL -->
+  <div class="modal-overlay" id="alreadySubmittedModal">
+    <div class="modal-card" style="max-width: 480px; text-align: center; border-color: rgba(245, 158, 11, 0.4);">
+      <button class="modal-close-btn" id="alreadyCloseBtn" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div style="margin: 8px 0 16px;">
+        <div
+          style="width: 60px; height: 60px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); border: 2px solid rgba(245, 158, 11, 0.4); display: inline-flex; align-items: center; justify-content: center; color: #fbbf24; margin-bottom: 12px;">
+          <i data-lucide="alert-triangle" style="width: 30px; height: 30px;"></i>
+        </div>
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin: 0 0 6px;">ഈ നമ്പറിൽ രജിസ്ട്രേഷൻ
+          നിലവിലുണ്ട്!</h2>
+        <span
+          style="font-size: 0.76rem; font-weight: 700; color: #fbbf24; background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(245, 158, 11, 0.25);">ALREADY
+          SUBMITTED</span>
+      </div>
+
+      <div
+        style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; text-align: left;">
+        <div style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 10px;">കണ്ടെത്തിയ രജിസ്ട്രേഷൻ വിവരങ്ങൾ:</div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="color:#94a3b8; font-size:0.85rem;">കുടുംബനാഥൻ:</span>
+          <span style="color:#fff; font-weight:700; font-size:0.9rem;" id="dupFamilyHead">-</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="color:#94a3b8; font-size:0.85rem;">മൊബൈൽ നമ്പർ:</span>
+          <span style="color:#38bdf8; font-weight:700; font-size:0.9rem;" id="dupPhone">-</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="color:#94a3b8; font-size:0.85rem;">ടിക്കറ്റ് നമ്പർ:</span>
+          <span style="color:#34d399; font-weight:700; font-size:0.9rem;" id="dupTicketId">-</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#94a3b8; font-size:0.85rem;">ആകെ അംഗങ്ങൾ:</span>
+          <span style="color:#fff; font-weight:700; font-size:0.9rem;" id="dupTotalCount">-</span>
+        </div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 20px;">
+        ഈ ഫോൺ നമ്പർ ഉപയോഗിച്ച് രജിസ്ട്രേഷൻ ഇതിനകം പൂർത്തിയായിട്ടുണ്ട്.
+      </p>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="action-btn" id="dupViewListBtn"
+          style="flex: 1; min-width: 140px; background: linear-gradient(135deg, #059669, #10b981); color: #fff; font-weight: 800; border: none; padding: 12px 18px; border-radius: 9999px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i data-lucide="users" style="width: 18px; height: 18px;"></i>
+          <span>ലിസ്റ്റിൽ കാണുക (View List)</span>
+        </button>
+        <button type="button" class="action-btn" id="dupChangePhoneBtn"
+          style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #e2e8f0; font-weight: 700; padding: 12px 18px; border-radius: 9999px; cursor: pointer;">
+          നമ്പർ തിരുത്തുക
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Scripts -->
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/app.js?v=3.1"></script>
+  <script src="js/app.js?v=3.2"></script>
 </body>
 
 </html>
