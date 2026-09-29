@@ -973,7 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cached = localStorage.getItem('cousins_trip_all_joined');
     if (cached) {
       try {
-        allJoinedMembers = JSON.parse(cached);
+        allJoinedMembers = JSON.parse(cached).filter(item => !String(item.ticketId || '').startsWith('TEST'));
         updateJoinedStatsUI(allJoinedMembers);
         renderJoinedCards(allJoinedMembers);
       } catch (err) {
@@ -1071,7 +1071,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(result => {
         if (result && result.status === 'success' && Array.isArray(result.data)) {
-          allJoinedMembers = result.data;
+          allJoinedMembers = result.data.filter(item => !String(item.ticketId || '').startsWith('TEST'));
           localStorage.setItem('cousins_trip_all_joined', JSON.stringify(allJoinedMembers));
           updateJoinedStatsUI(allJoinedMembers);
           renderJoinedCards(allJoinedMembers);
