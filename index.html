@@ -21,9 +21,357 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/animations.css">
+  <!-- Stylesheets with Cache Busting -->
+  <link rel="stylesheet" href="css/style.css?v=2.2">
+  <link rel="stylesheet" href="css/animations.css?v=2.2">
+
+  <style>
+    /* Critical UI Segmented Tabs & Joined Members Section Styles */
+    .view-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin: 14px 0 8px;
+      flex-wrap: wrap;
+    }
+    .tab-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 20px;
+      border-radius: 9999px;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+    .tab-pill:hover {
+      color: #ffffff;
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.12);
+      transform: translateY(-1px);
+    }
+    .tab-pill.active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.4) 100%);
+      border-color: #34d399;
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.3);
+    }
+    .tab-pill svg {
+      width: 17px;
+      height: 17px;
+    }
+    .pill-counter {
+      background: #10b981;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      line-height: 1;
+    }
+    /* Tab View Visibility */
+    .tab-content-hidden {
+      display: none !important;
+    }
+    .joined-members-section {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .joined-members-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #10b981, #6366f1, #ec4899);
+    }
+    .joined-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .joined-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .joined-badge-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+    }
+    .joined-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f8fafc;
+      margin: 0;
+      line-height: 1.3;
+    }
+    .joined-subtitle {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.08em;
+    }
+    .joined-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .live-indicator-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 9999px;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    .refresh-list-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      padding: 7px 15px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .refresh-list-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .joined-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .j-stat-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+    }
+    .j-stat-box.highlight-emerald {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .j-stat-box.highlight-emerald .j-stat-num {
+      color: #34d399;
+    }
+    .j-stat-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+    .j-stat-lbl {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .joined-search-bar {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .joined-search-bar .search-icon {
+      position: absolute;
+      left: 14px;
+      color: #64748b;
+      width: 17px;
+      height: 17px;
+      pointer-events: none;
+    }
+    .joined-search-bar input {
+      width: 100%;
+      background: #090e17 !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 10px;
+      padding: 12px 42px;
+      color: #ffffff !important;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .joined-search-bar input:focus {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+    .clear-search-btn {
+      position: absolute;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .joined-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .joined-family-card {
+      background: rgba(17, 24, 39, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .j-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .j-card-leader-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .j-avatar-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+    .j-leader-name {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .j-card-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .j-ticket-badge {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 9px;
+      border-radius: 9999px;
+    }
+    .j-count-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 9px;
+      border-radius: 9999px;
+    }
+    .j-members-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 4px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+    .j-member-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+    }
+    .j-member-chip.chip-adult {
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.1);
+      color: #a7f3d0;
+    }
+    .j-member-chip.chip-kid8to15 {
+      border-color: rgba(99, 102, 241, 0.3);
+      background: rgba(99, 102, 241, 0.1);
+      color: #c7d2fe;
+    }
+    .j-member-chip.chip-kidBelow8 {
+      border-color: rgba(244, 63, 94, 0.3);
+      background: rgba(244, 63, 94, 0.1);
+      color: #fecdd3;
+    }
+    .j-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: #64748b;
+      padding-top: 4px;
+    }
+    @media (max-width: 600px) {
+      .joined-stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .joined-members-section {
+        padding: 20px 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -103,15 +451,15 @@
 
       <!-- Quick Switch Navigation -->
       <div class="view-switch-row">
-        <a href="#tripRegistrationForm" class="switch-pill active" id="tabRegisterBtn">
+        <button type="button" class="tab-pill active" id="tabRegisterBtn">
           <i data-lucide="user-plus"></i>
           <span>രജിസ്ട്രേഷൻ (Register)</span>
-        </a>
-        <a href="#joinedMembersSection" class="switch-pill" id="tabJoinedBtn">
+        </button>
+        <button type="button" class="tab-pill" id="tabJoinedBtn">
           <i data-lucide="users"></i>
           <span>പങ്കുചേരുന്നവർ (Joined Members)</span>
           <span class="pill-counter" id="navJoinedBadge">0</span>
-        </a>
+        </button>
       </div>
     </header>
 
@@ -283,7 +631,7 @@
     <!-- =====================================================================
          JOINED MEMBERS SECTION (യാത്രയിൽ പങ്കുചേരുന്നവർ)
          ===================================================================== -->
-    <section class="joined-members-section" id="joinedMembersSection">
+    <section class="joined-members-section tab-content-hidden" id="joinedMembersSection">
       <div class="joined-section-header">
         <div class="joined-title-group">
           <div class="joined-badge-icon">
@@ -330,7 +678,8 @@
       <!-- Search & Filter Bar -->
       <div class="joined-search-bar">
         <i data-lucide="search" class="search-icon"></i>
-        <input type="text" id="joinedSearchInput" placeholder="പേര് അല്ലെങ്കിൽ ഫോൺ നമ്പർ തിരയുക (Search by name or phone)..." autocomplete="off" />
+        <input type="text" id="joinedSearchInput"
+          placeholder="പേര് അല്ലെങ്കിൽ ഫോൺ നമ്പർ തിരയുക (Search by name or phone)..." autocomplete="off" />
         <button type="button" id="clearSearchBtn" class="clear-search-btn" style="display: none;">
           <i data-lucide="x"></i>
         </button>
@@ -462,7 +811,7 @@
   <!-- Scripts -->
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=2.2"></script>
 </body>
 
 </html>

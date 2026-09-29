@@ -948,23 +948,38 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 6. Navigation tabs jump behavior
+    // 6. Navigation tabs toggle behavior
     if (tabRegisterBtn && tabJoinedBtn) {
       tabRegisterBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        tabRegisterBtn.classList.add('active');
-        tabJoinedBtn.classList.remove('active');
-        const formEl = document.getElementById('tripRegistrationForm');
-        if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+        switchToTab('register');
       });
 
       tabJoinedBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        switchToTab('joined');
+      });
+    }
+
+    function switchToTab(tabName) {
+      const formEl = document.getElementById('tripRegistrationForm');
+      const sectionEl = document.getElementById('joinedMembersSection');
+
+      if (tabName === 'register') {
+        tabRegisterBtn.classList.add('active');
+        tabJoinedBtn.classList.remove('active');
+        if (formEl) formEl.classList.remove('tab-content-hidden');
+        if (sectionEl) sectionEl.classList.add('tab-content-hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
         tabJoinedBtn.classList.add('active');
         tabRegisterBtn.classList.remove('active');
-        const sectionEl = document.getElementById('joinedMembersSection');
-        if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
-      });
+        if (sectionEl) sectionEl.classList.remove('tab-content-hidden');
+        if (formEl) formEl.classList.add('tab-content-hidden');
+        renderJoinedCards(allJoinedMembers);
+        if (window.lucide) window.lucide.createIcons();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   }
 
