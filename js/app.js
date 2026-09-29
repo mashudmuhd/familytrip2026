@@ -676,7 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Share to WhatsApp Direct Link
+  // Share to WhatsApp Group Link
   shareWhatsappBtn.addEventListener('click', () => {
     if (!lastSubmission) {
       const saved = localStorage.getItem('cousins_trip_2026_submission');
@@ -685,8 +685,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lastSubmission) return;
 
     const message = generateWhatsAppMessage(lastSubmission);
-    const whatsappUrl = `https://wa.me/919526003488?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    const groupUrl = 'https://chat.whatsapp.com/DvSm1WrEayALujp2dGq87d?mode=gi_t';
+
+    // Auto-copy message details to clipboard so user can immediately paste in group chat
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(message).then(() => {
+        showToast('മെസ്സേജ് കോപ്പി ചെയ്തു! ഗ്രൂപ്പിൽ പേസ്റ്റ് ചെയ്യുക (Copied! Paste in group)', 'success');
+      }).catch(() => {});
+    } else {
+      showToast('ഗ്രൂപ്പ് തുറക്കുന്നു... (Opening group...)', 'info');
+    }
+
+    window.open(groupUrl, '_blank');
   });
 
   // Copy Summary Details
