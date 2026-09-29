@@ -100,6 +100,19 @@
           <span>Full Day Experience</span>
         </div>
       </div>
+
+      <!-- Quick Switch Navigation -->
+      <div class="view-switch-row">
+        <a href="#tripRegistrationForm" class="switch-pill active" id="tabRegisterBtn">
+          <i data-lucide="user-plus"></i>
+          <span>രജിസ്ട്രേഷൻ (Register)</span>
+        </a>
+        <a href="#joinedMembersSection" class="switch-pill" id="tabJoinedBtn">
+          <i data-lucide="users"></i>
+          <span>പങ്കുചേരുന്നവർ (Joined Members)</span>
+          <span class="pill-counter" id="navJoinedBadge">0</span>
+        </a>
+      </div>
     </header>
 
     <!-- FORM CONTAINER -->
@@ -266,6 +279,73 @@
       </div>
 
     </form>
+
+    <!-- =====================================================================
+         JOINED MEMBERS SECTION (യാത്രയിൽ പങ്കുചേരുന്നവർ)
+         ===================================================================== -->
+    <section class="joined-members-section" id="joinedMembersSection">
+      <div class="joined-section-header">
+        <div class="joined-title-group">
+          <div class="joined-badge-icon">
+            <i data-lucide="users"></i>
+          </div>
+          <div>
+            <h2 class="joined-title">യാത്രയിൽ പങ്കുചേരുന്നവർ</h2>
+            <span class="joined-subtitle">JOINED MEMBERS LIST • LIVE UPDATES</span>
+          </div>
+        </div>
+
+        <div class="joined-header-actions">
+          <div class="live-indicator-pill">
+            <span class="live-dot"></span>
+            <span>LIVE SYNC</span>
+          </div>
+          <button type="button" class="refresh-list-btn" id="refreshMembersBtn" title="ലിസ്റ്റ് പുതുക്കുക">
+            <i data-lucide="refresh-cw" id="refreshIcon"></i>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Stats Bar -->
+      <div class="joined-stats-bar">
+        <div class="j-stat-box">
+          <span class="j-stat-num" id="totalJoinedFamilies">0</span>
+          <span class="j-stat-lbl">കുടുംബങ്ങൾ (Families)</span>
+        </div>
+        <div class="j-stat-box highlight-emerald">
+          <span class="j-stat-num" id="totalJoinedPersons">0</span>
+          <span class="j-stat-lbl">ആകെ അംഗങ്ങൾ (Total)</span>
+        </div>
+        <div class="j-stat-box">
+          <span class="j-stat-num" id="totalJoinedAdults">0</span>
+          <span class="j-stat-lbl">മുതിർന്നവർ (Adults)</span>
+        </div>
+        <div class="j-stat-box">
+          <span class="j-stat-num" id="totalJoinedKids">0</span>
+          <span class="j-stat-lbl">കുട്ടികൾ (Kids)</span>
+        </div>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="joined-search-bar">
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" id="joinedSearchInput" placeholder="പേര് അല്ലെങ്കിൽ ഫോൺ നമ്പർ തിരയുക (Search by name or phone)..." autocomplete="off" />
+        <button type="button" id="clearSearchBtn" class="clear-search-btn" style="display: none;">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Dynamic Cards Container -->
+      <div class="joined-cards-container" id="joinedCardsContainer">
+        <!-- Rendered dynamically by app.js -->
+        <div class="joined-loading-skeleton" id="joinedLoadingSkeleton">
+          <div class="skeleton-shimmer"></div>
+          <div class="skeleton-shimmer"></div>
+          <div class="skeleton-shimmer"></div>
+        </div>
+      </div>
+    </section>
 
     <!-- RECENT SUBMISSIONS / QUICK STATS SUMMARY BANNER -->
     <div class="footer-banner">

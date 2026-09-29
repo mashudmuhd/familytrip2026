@@ -611,6 +611,9 @@ document.addEventListener('DOMContentLoaded', () => {
     lastSubmission = submissionData;
     localStorage.setItem('cousins_trip_2026_submission', JSON.stringify(submissionData));
 
+    // Record & sync to Joined Members list
+    recordJoinedSubmission(submissionData);
+
     // Audio & Confetti Celebration
     if (window.soundManager) window.soundManager.playSuccess();
     triggerCelebrationConfetti();
@@ -876,15 +879,292 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
-  function escapeHtml(text) {
-    if (!text) return '';
-    const map = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;'
-    };
-    return text.toString().replace(/[&<>"']/g, m => map[m]);
+  /* ==========================================================================
+     JOINED MEMBERS (യാത്രയിൽ പങ്കുചേരുന്നവർ) - GOOGLE SHEETS & LIVE SYNC
+     ========================================================================== */
+
+  // Google Apps Script Web App URL
+  // Deploy google-apps-script.js in Google Sheets and set the URL below or in localStorage
+  const GOOGLE_SCRIPT_URL = localStorage.getItem('cousins_trip_sheet_url') || '';
+
+  let allJoinedMembers = [];
+  const joinedCardsContainer = document.getElementById('joinedCardsContainer');
+  const joinedSearchInput = document.getElementById('joinedSearchInput');
+  const clearSearchBtn = document.getElementById('clearSearchBtn');
+  const refreshMembersBtn = document.getElementById('refreshMembersBtn');
+  const refreshIcon = document.getElementById('refreshIcon');
+  const totalJoinedFamiliesDisplay = document.getElementById('totalJoinedFamilies');
+  const totalJoinedPersonsDisplay = document.getElementById('totalJoinedPersons');
+  const totalJoinedAdultsDisplay = document.getElementById('totalJoinedAdults');
+  const totalJoinedKidsDisplay = document.getElementById('totalJoinedKids');
+  const navJoinedBadge = document.getElementById('navJoinedBadge');
+  const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+  const tabJoinedBtn = document.getElementById('tabJoinedBtn');
+
+  // Initialize Joined Members Section
+  initJoinedMembersSection();
+
+  function initJoinedMembersSection() {
+    // 1. Load cached members from localStorage for instant rendering
+    const cached = localStorage.getItem('cousins_trip_all_joined');
+    if (cached) {
+      try {
+        allJoinedMembers = JSON.parse(cached);
+        updateJoinedStatsUI(allJoinedMembers);
+        renderJoinedCards(allJoinedMembers);
+      } catch (err) {
+        allJoinedMembers = [];
+      }
+    }
+
+    // 2. Fetch latest from Google Sheets
+    fetchJoinedMembersFromBackend();
+
+    // 3. Search input filtering
+    if (joinedSearchInput) {
+      joinedSearchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (clearSearchBtn) {
+          clearSearchBtn.style.display = query.length > 0 ? 'flex' : 'none';
+        }
+        filterJoinedCards(query);
+      });
+    }
+
+    // 4. Clear search button
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', () => {
+        joinedSearchInput.value = '';
+        clearSearchBtn.style.display = 'none';
+        renderJoinedCards(allJoinedMembers);
+      });
+    }
+
+    // 5. Refresh button
+    if (refreshMembersBtn) {
+      refreshMembersBtn.addEventListener('click', () => {
+        if (refreshIcon) refreshMembersBtn.classList.add('spinning');
+        fetchJoinedMembersFromBackend(true);
+      });
+    }
+
+    // 6. Navigation tabs jump behavior
+    if (tabRegisterBtn && tabJoinedBtn) {
+      tabRegisterBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        tabRegisterBtn.classList.add('active');
+        tabJoinedBtn.classList.remove('active');
+        const formEl = document.getElementById('tripRegistrationForm');
+        if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      tabJoinedBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        tabJoinedBtn.classList.add('active');
+        tabRegisterBtn.classList.remove('active');
+        const sectionEl = document.getElementById('joinedMembersSection');
+        if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  }
+
+  function fetchJoinedMembersFromBackend(isManualRefresh = false) {
+    if (!GOOGLE_SCRIPT_URL) {
+      // If remote URL is not set yet, use localStorage cache
+      const cached = localStorage.getItem('cousins_trip_all_joined');
+      if (cached) {
+        try {
+          allJoinedMembers = JSON.parse(cached);
+        } catch (e) {}
+      }
+      updateJoinedStatsUI(allJoinedMembers);
+      renderJoinedCards(allJoinedMembers);
+      if (isManualRefresh) {
+        setTimeout(() => {
+          if (refreshMembersBtn) refreshMembersBtn.classList.remove('spinning');
+          showToast('ലിസ്റ്റ് പുതുക്കി (List refreshed)', 'success');
+        }, 500);
+      }
+      return;
+    }
+
+    fetch(GOOGLE_SCRIPT_URL)
+      .then(res => res.json())
+      .then(result => {
+        if (result && result.status === 'success' && Array.isArray(result.data)) {
+          allJoinedMembers = result.data;
+          localStorage.setItem('cousins_trip_all_joined', JSON.stringify(allJoinedMembers));
+          updateJoinedStatsUI(allJoinedMembers);
+          renderJoinedCards(allJoinedMembers);
+          if (isManualRefresh) {
+            showToast('തത്സമയ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു! ✨', 'success');
+          }
+        }
+      })
+      .catch(err => {
+        console.warn("Could not sync from Google Sheets:", err);
+      })
+      .finally(() => {
+        if (refreshMembersBtn) refreshMembersBtn.classList.remove('spinning');
+      });
+  }
+
+  function recordJoinedSubmission(submission) {
+    // Add to local array immediately for zero-lag UI update
+    const exists = allJoinedMembers.some(item => item.ticketId === submission.ticketId);
+    if (!exists) {
+      allJoinedMembers.unshift(submission);
+      localStorage.setItem('cousins_trip_all_joined', JSON.stringify(allJoinedMembers));
+      updateJoinedStatsUI(allJoinedMembers);
+      renderJoinedCards(allJoinedMembers);
+    }
+
+    // Push to Google Sheets Web App in background
+    if (GOOGLE_SCRIPT_URL) {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(submission)
+      }).catch(err => {
+        console.warn("Google Sheets background sync error:", err);
+      });
+    }
+  }
+
+  function updateJoinedStatsUI(list) {
+    const totalFamilies = list.length;
+    let totalPersons = 0;
+    let totalAdults = 0;
+    let totalKids = 0;
+
+    list.forEach(item => {
+      totalPersons += Number(item.totalCount) || 0;
+      totalAdults += Number(item.adultCount) || 0;
+      const k1 = Number(item.kid8to15Count) || 0;
+      const k2 = Number(item.kidBelow8Count) || 0;
+      totalKids += (k1 + k2) || (Number(item.kidCount) || 0);
+    });
+
+    if (totalJoinedFamiliesDisplay) totalJoinedFamiliesDisplay.textContent = totalFamilies;
+    if (totalJoinedPersonsDisplay) totalJoinedPersonsDisplay.textContent = totalPersons;
+    if (totalJoinedAdultsDisplay) totalJoinedAdultsDisplay.textContent = totalAdults;
+    if (totalJoinedKidsDisplay) totalJoinedKidsDisplay.textContent = totalKids;
+    if (navJoinedBadge) navJoinedBadge.textContent = totalPersons;
+  }
+
+  function filterJoinedCards(query) {
+    if (!query) {
+      renderJoinedCards(allJoinedMembers);
+      return;
+    }
+
+    const filtered = allJoinedMembers.filter(item => {
+      const head = (item.familyHead || '').toLowerCase();
+      const phone = (item.phone || '').toLowerCase();
+      const ticket = (item.ticketId || '').toLowerCase();
+      const membersStr = (item.membersList || []).map(m => m.name.toLowerCase()).join(' ');
+      const summaryStr = (item.membersSummary || '').toLowerCase();
+
+      return head.includes(query) || phone.includes(query) || ticket.includes(query) || membersStr.includes(query) || summaryStr.includes(query);
+    });
+
+    renderJoinedCards(filtered, query);
+  }
+
+  function renderJoinedCards(list, searchQuery = '') {
+    if (!joinedCardsContainer) return;
+    joinedCardsContainer.innerHTML = '';
+
+    if (!list || list.length === 0) {
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'joined-empty-state';
+      emptyDiv.innerHTML = `
+        <div class="joined-empty-icon">
+          <i data-lucide="${searchQuery ? 'search-x' : 'user-check'}"></i>
+        </div>
+        <h3 class="joined-empty-title">${searchQuery ? 'തിരഞ്ഞ പേരിൽ ആരെയും കണ്ടില്ല' : 'ആരും ഇതുവരെ രജിസ്റ്റർ ചെയ്തിട്ടില്ല!'}</h3>
+        <p class="joined-empty-desc">${searchQuery ? 'മറ്റൊരു പേര് അല്ലെങ്കിൽ ഫോൺ നമ്പർ തിരഞ്ഞു നോക്കുക.' : 'നിങ്ങളുടെ കുടുംബത്തിന്റെ രജിസ്ട്രേഷൻ ആദ്യമായി സമർപ്പിക്കൂ!'}</p>
+      `;
+      joinedCardsContainer.appendChild(emptyDiv);
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
+
+    list.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'joined-family-card';
+
+      const initial = (item.familyHead || 'F').charAt(0).toUpperCase();
+      const membersList = item.membersList || [];
+
+      let chipsHtml = '';
+      if (membersList.length > 0) {
+        chipsHtml = membersList.map(m => {
+          let chipClass = 'chip-adult';
+          let tagText = 'Adult';
+          if (m.type === 'kid8to15') {
+            chipClass = 'chip-kid8to15';
+            tagText = '8-15 Yrs';
+          } else if (m.type === 'kidBelow8' || m.type === 'kid') {
+            chipClass = 'chip-kidBelow8';
+            tagText = 'Below 8';
+          }
+          return `<span class="j-member-chip ${chipClass}">
+            <span>${escapeHtml(m.name)}</span>
+            <span class="j-chip-tag">(${tagText})</span>
+          </span>`;
+        }).join('');
+      } else if (item.membersSummary) {
+        chipsHtml = `<div style="font-size:0.8rem; color:var(--text-secondary); white-space:pre-line;">${escapeHtml(item.membersSummary)}</div>`;
+      }
+
+      const formattedTime = formatTimestamp(item.timestamp);
+
+      card.innerHTML = `
+        <div class="j-card-header">
+          <div class="j-card-leader-info">
+            <div class="j-avatar-circle">${escapeHtml(initial)}</div>
+            <div>
+              <div class="j-leader-name">${escapeHtml(item.familyHead || 'Family')}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${item.phone && item.phone !== 'Not Provided' ? '📞 ' + escapeHtml(item.phone) : 'Family Group'}</div>
+            </div>
+          </div>
+          <div class="j-card-badges">
+            <span class="j-ticket-badge">#${escapeHtml(item.ticketId || '')}</span>
+            <span class="j-count-badge">👥 ${item.totalCount || 1} പേർ</span>
+          </div>
+        </div>
+
+        <div class="j-members-chips">
+          ${chipsHtml}
+        </div>
+
+        <div class="j-card-footer">
+          <span>🕒 ${formattedTime}</span>
+          <span style="color:#10b981; font-weight:700;">● Confirmed</span>
+        </div>
+      `;
+
+      joinedCardsContainer.appendChild(card);
+    });
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function formatTimestamp(ts) {
+    if (!ts) return 'Just now';
+    try {
+      const date = new Date(ts);
+      if (isNaN(date.getTime())) return String(ts);
+      return date.toLocaleDateString('en-IN', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return String(ts);
+    }
   }
 });
+
