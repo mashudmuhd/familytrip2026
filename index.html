@@ -22,8 +22,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- Stylesheets with Cache Busting -->
-  <link rel="stylesheet" href="css/style.css?v=2.2">
-  <link rel="stylesheet" href="css/animations.css?v=2.2">
+  <link rel="stylesheet" href="css/style.css?v=2.3">
+  <link rel="stylesheet" href="css/animations.css?v=2.3">
 
   <style>
     /* Critical UI Segmented Tabs & Joined Members Section Styles */
@@ -36,6 +36,7 @@
       margin: 14px 0 8px;
       flex-wrap: wrap;
     }
+
     .tab-pill {
       display: inline-flex;
       align-items: center;
@@ -53,22 +54,26 @@
       transition: all 0.25s ease;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
+
     .tab-pill:hover {
       color: #ffffff;
       border-color: rgba(16, 185, 129, 0.4);
       background: rgba(16, 185, 129, 0.12);
       transform: translateY(-1px);
     }
+
     .tab-pill.active {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.4) 100%);
       border-color: #34d399;
       color: #ffffff;
       box-shadow: 0 4px 18px rgba(16, 185, 129, 0.3);
     }
+
     .tab-pill svg {
       width: 17px;
       height: 17px;
     }
+
     .pill-counter {
       background: #10b981;
       color: #ffffff;
@@ -78,10 +83,12 @@
       border-radius: 9999px;
       line-height: 1;
     }
+
     /* Tab View Visibility */
     .tab-content-hidden {
       display: none !important;
     }
+
     .joined-members-section {
       width: 100%;
       background: #0f172a;
@@ -91,11 +98,12 @@
       display: flex;
       flex-direction: column;
       gap: 22px;
-      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
       position: relative;
       overflow: hidden;
       margin-top: 10px;
     }
+
     .joined-members-section::before {
       content: '';
       position: absolute;
@@ -105,6 +113,7 @@
       height: 3px;
       background: linear-gradient(90deg, #10b981, #6366f1, #ec4899);
     }
+
     .joined-section-header {
       display: flex;
       justify-content: space-between;
@@ -112,11 +121,13 @@
       flex-wrap: wrap;
       gap: 16px;
     }
+
     .joined-title-group {
       display: flex;
       align-items: center;
       gap: 14px;
     }
+
     .joined-badge-icon {
       width: 44px;
       height: 44px;
@@ -128,6 +139,7 @@
       justify-content: center;
       color: #34d399;
     }
+
     .joined-title {
       font-size: 1.25rem;
       font-weight: 800;
@@ -135,17 +147,20 @@
       margin: 0;
       line-height: 1.3;
     }
+
     .joined-subtitle {
       font-size: 0.72rem;
       font-weight: 700;
       color: #64748b;
       letter-spacing: 0.08em;
     }
+
     .joined-header-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .live-indicator-pill {
       display: inline-flex;
       align-items: center;
@@ -158,6 +173,7 @@
       padding: 5px 12px;
       border-radius: 9999px;
     }
+
     .live-dot {
       width: 7px;
       height: 7px;
@@ -165,6 +181,7 @@
       background: #10b981;
       box-shadow: 0 0 8px #10b981;
     }
+
     .refresh-list-btn {
       display: inline-flex;
       align-items: center;
@@ -179,15 +196,18 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .refresh-list-btn:hover {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
     }
+
     .joined-stats-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
     }
+
     .j-stat-box {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -199,30 +219,36 @@
       text-align: center;
       gap: 4px;
     }
+
     .j-stat-box.highlight-emerald {
       background: rgba(16, 185, 129, 0.1);
       border-color: rgba(16, 185, 129, 0.3);
     }
+
     .j-stat-box.highlight-emerald .j-stat-num {
       color: #34d399;
     }
+
     .j-stat-num {
       font-size: 1.5rem;
       font-weight: 800;
       color: #ffffff;
       line-height: 1.1;
     }
+
     .j-stat-lbl {
       font-size: 0.72rem;
       font-weight: 600;
       color: #94a3b8;
     }
+
     .joined-search-bar {
       position: relative;
       width: 100%;
       display: flex;
       align-items: center;
     }
+
     .joined-search-bar .search-icon {
       position: absolute;
       left: 14px;
@@ -231,6 +257,7 @@
       height: 17px;
       pointer-events: none;
     }
+
     .joined-search-bar input {
       width: 100%;
       background: #090e17 !important;
@@ -243,10 +270,12 @@
       outline: none;
       transition: all 0.2s;
     }
+
     .joined-search-bar input:focus {
       border-color: #10b981 !important;
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     }
+
     .clear-search-btn {
       position: absolute;
       right: 12px;
@@ -255,11 +284,13 @@
       color: #64748b;
       cursor: pointer;
     }
+
     .joined-cards-container {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
+
     .joined-family-card {
       background: rgba(17, 24, 39, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -269,6 +300,7 @@
       flex-direction: column;
       gap: 12px;
     }
+
     .j-card-header {
       display: flex;
       justify-content: space-between;
@@ -276,11 +308,13 @@
       flex-wrap: wrap;
       gap: 8px;
     }
+
     .j-card-leader-info {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .j-avatar-circle {
       width: 36px;
       height: 36px;
@@ -293,16 +327,19 @@
       font-weight: 800;
       font-size: 0.95rem;
     }
+
     .j-leader-name {
       font-size: 0.98rem;
       font-weight: 800;
       color: #f8fafc;
     }
+
     .j-card-badges {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .j-ticket-badge {
       font-size: 0.74rem;
       font-weight: 800;
@@ -312,6 +349,7 @@
       padding: 3px 9px;
       border-radius: 9999px;
     }
+
     .j-count-badge {
       font-size: 0.74rem;
       font-weight: 700;
@@ -321,6 +359,7 @@
       padding: 3px 9px;
       border-radius: 9999px;
     }
+
     .j-members-chips {
       display: flex;
       flex-wrap: wrap;
@@ -328,6 +367,7 @@
       padding-top: 4px;
       border-top: 1px dashed rgba(255, 255, 255, 0.08);
     }
+
     .j-member-chip {
       display: inline-flex;
       align-items: center;
@@ -340,21 +380,25 @@
       background: rgba(255, 255, 255, 0.04);
       color: #e2e8f0;
     }
+
     .j-member-chip.chip-adult {
       border-color: rgba(16, 185, 129, 0.3);
       background: rgba(16, 185, 129, 0.1);
       color: #a7f3d0;
     }
+
     .j-member-chip.chip-kid8to15 {
       border-color: rgba(99, 102, 241, 0.3);
       background: rgba(99, 102, 241, 0.1);
       color: #c7d2fe;
     }
+
     .j-member-chip.chip-kidBelow8 {
       border-color: rgba(244, 63, 94, 0.3);
       background: rgba(244, 63, 94, 0.1);
       color: #fecdd3;
     }
+
     .j-card-footer {
       display: flex;
       justify-content: space-between;
@@ -363,10 +407,12 @@
       color: #64748b;
       padding-top: 4px;
     }
+
     @media (max-width: 600px) {
       .joined-stats-bar {
         grid-template-columns: repeat(2, 1fr);
       }
+
       .joined-members-section {
         padding: 20px 16px;
       }
@@ -652,6 +698,11 @@
             <i data-lucide="refresh-cw" id="refreshIcon"></i>
             <span>Refresh</span>
           </button>
+          <button type="button" class="refresh-list-btn" id="connectSheetBtn" title="Google Sheet ലിങ്ക് ചെയ്യുക"
+            style="border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.1); color:#34d399;">
+            <i data-lucide="sheet"></i>
+            <span>Connect Sheet</span>
+          </button>
         </div>
       </div>
 
@@ -805,13 +856,70 @@
     </div>
   </div>
 
+  <!-- GOOGLE SHEETS SETUP MODAL -->
+  <div class="modal-overlay" id="sheetSetupModal">
+    <div class="modal-card" style="max-width: 520px; border-color: rgba(16, 185, 129, 0.4);">
+      <button class="modal-close-btn" id="sheetModalCloseBtn" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="sheet-modal-header" style="text-align:center; padding: 10px 0 16px;">
+        <div
+          style="width: 54px; height: 54px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); display: inline-flex; align-items: center; justify-content: center; color: #34d399; margin-bottom: 12px;">
+          <i data-lucide="sheet" style="width: 28px; height: 28px;"></i>
+        </div>
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin: 0 0 6px;">Google Sheet ബന്ധിപ്പിക്കുക</h2>
+        <p style="font-size: 0.84rem; color: #94a3b8; margin: 0; line-height: 1.4;">എല്ലാ ഫോണുകളിൽ നിന്നുമുള്ള
+          രജിസ്ട്രേഷൻ ഒരുമിച്ച് വരാൻ നിങ്ങളുടെ Google Apps Script ലിങ്ക് ഇവിടെ നൽകുക.</p>
+      </div>
+
+      <div
+        style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 16px;">
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <span
+            style="background:#10b981; color:#fff; width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem; flex-shrink:0;">1</span>
+          <span><a href="https://sheets.new" target="_blank"
+              style="color:#34d399; font-weight:700; text-decoration:underline;">sheets.new</a> തുറന്ന് പുതിയൊരു Google
+            Sheet ഉണ്ടാക്കുക.</span>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <span
+            style="background:#10b981; color:#fff; width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem; flex-shrink:0;">2</span>
+          <span><strong>Extensions &gt; Apps Script</strong> എടുത്ത് <code
+              style="color:#a7f3d0; background:rgba(0,0,0,0.4); padding:2px 6px; border-radius:4px;">google-apps-script.js</code>
+            കോഡ് പേസ്റ്റ് ചെയ്യുക.</span>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <span
+            style="background:#10b981; color:#fff; width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem; flex-shrink:0;">3</span>
+          <span><strong>Deploy &gt; New deployment</strong> &gt; Web app (Who has access: <strong>Anyone</strong>) നൽകി
+            ലഭിക്കുന്ന URL താഴെ പേസ്റ്റ് ചെയ്യുക.</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px;">
+        <label for="sheetUrlInput" style="font-size: 0.84rem; font-weight: 700; color: #e2e8f0;">Web App URL:</label>
+        <input type="url" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec"
+          style="width: 100%; background: #090e17; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 0.86rem; outline: none;" />
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="action-btn" id="saveSheetUrlBtn"
+          style="flex: 1; background: linear-gradient(135deg, #059669, #10b981); color: #fff; font-weight: 800; border: none; padding: 13px 20px; border-radius: 9999px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+          <span>Save &amp; Connect Live</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Scripts -->
   <script src="js/audio.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/app.js?v=2.2"></script>
+  <script src="js/app.js?v=2.3"></script>
 </body>
 
 </html>
